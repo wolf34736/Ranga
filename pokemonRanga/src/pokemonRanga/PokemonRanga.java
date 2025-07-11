@@ -8,7 +8,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 public class PokemonRanga {
 	/*
@@ -131,9 +130,13 @@ public class PokemonRanga {
 	*/
 	private static void battle(Pokemon[] userTeam, Pokemon[] cpuTeam, int currentUser, int currentCPU) {
 		pokemonList.get(2).setStartingLevel();
-		showMoves(userTeam[1]);
-		Move userAttack = attack(userTeam[currentUser], 0);
+		showMoves(userTeam[0]);
+
+		//pick user's action
 		Move cpuAttack = cpuPickAttack(cpuTeam[currentCPU]);
+		System.out.println("The enemy pokemon " + cpuTeam[currentCPU].getNameShown() + " has " + cpuTeam[currentCPU].getPercentHP() + "% HP.\nIt has " + cpuTeam[currentCPU].getStatus() + " status.");
+		//pick cpu's action
+		Move userAttack = attack(userTeam[currentUser], 0);
 		if(userAttack.getName().equalsIgnoreCase("Switch")) {
 			int choice = currentUser;
 			while(1 > choice || choice > 6 || choice == currentUser + 1) {
@@ -154,7 +157,7 @@ public class PokemonRanga {
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			System.out.println("\n**************************************************\nthread.sleep(1000)\nPokemonRanga method battle\n**************************************************\n\n\n\n");
+			System.out.println("\n\nthread.sleep(1000)\nPokemonRanga method battle\n\n\n\n\n");
 			e.printStackTrace();
 		}
 		
@@ -162,10 +165,11 @@ public class PokemonRanga {
 		 * see if battle is over
 		*/
 		if(!checkTeamHealth(userTeam)) {
-			
+			System.out.println("You have no pokemon left.\nCPU wins.");
+			System.out.println("Game Over.");
 		}
 		else if(!checkTeamHealth(cpuTeam)) {
-			
+			System.out.println("You win!");
 		}
 		else {/*battle isn't over*/
 			
@@ -187,33 +191,119 @@ public class PokemonRanga {
 		int cpuDamage = 1;
 		boolean screens[] = new boolean[6];/*reflectUser, reflectCPU, lightScreenUser, lightScreenCPU, auroraVeilUser, auroraVielCPU*/
 		if(userSwitched) {
+			System.out.println("You switched to " + userTeam[currentUser].getNameShown() + ".");
+			userGRUsed = false; // resets Glaive Rush
+			//userTeam[currentUser].resetStatus();  // resets non-volatile status effects
+			//userTeam[currentUser].resetStats();	 // resets stats
 			if(checkIfHit(cpuTeam[currentCPU], userTeam[currentUser], cpuAttack)) {
 				
                 cpuDamage = damageCalc(cpuTeam[currentCPU], userTeam[currentUser], 1, cpuGRUsed, getRandomDouble(.85), cpuAttack);
-                
+				if(cpuDamage > 0) {
+					userTeam[currentUser].takeDamage(cpuDamage);
+					System.out.println("Their " + cpuTeam[currentCPU].getNameShown() + " took " + cpuDamage + " damage from " + cpuAttack.getName() + ".");
+				}
+			}
+			else {
+				System.out.println("Your " + cpuTeam[currentCPU].getNameShown() + " avoided the attack from " + cpuTeam[currentCPU].getNameShown() + ".");
 			}
 		}
 		else if(cpuSwitched) {
-			
+			System.out.println("Enemy switched to " + cpuTeam[currentCPU].getNameShown() + ".");
+			cpuGRUsed = false; // resets Glaive Rush
+			//cpuTeam[currentCPU].resetStatus();  // resets status effects
+			//cpuTeam[currentCPU].resetStats();	 // resets stats
+			if(checkIfHit(userTeam[currentUser], cpuTeam[currentCPU], userAttack)) {
+				userDamage = damageCalc(userTeam[currentUser], cpuTeam[currentCPU], 1, userGRUsed, getRandomDouble(.85), userAttack);
+				if(userDamage > 0) {
+					cpuTeam[currentCPU].takeDamage(userDamage);
+					System.out.println("Your " + userTeam[currentUser].getNameShown() + " dealt " + userDamage + " damage with " + userAttack.getName() + ".");
+					System.out.println("The enemy pokemon " + cpuTeam[currentCPU].getNameShown() + " has " + cpuTeam[currentCPU].getPercentHP() + "% HP.\nIt has " + cpuTeam[currentCPU].getStatus() + " status.");
+				}
+			}
+			else {
+				System.out.println("Their " + cpuTeam[currentCPU].getNameShown() + " avoided the attack from " + userTeam[currentUser].getNameShown() + ".");
+			}
 		}
 		else if(userSwitched && cpuSwitched) {
-			
+			System.out.println("Both you and the enemy switched Pokemon.");
+			userGRUsed = false; // resets Glaive Rush
+			cpuGRUsed = false; // resets Glaive Rush
+			//userTeam[currentUser].resetStatus();  // resets non-volatile status effects
+			//userTeam[currentUser].resetStats();	 // resets stats
+			//cpuTeam[currentCPU].resetStatus();  // resets status effects
+			//cpuTeam[currentCPU].resetStats();	 // resets stats
 		}
 		else {
-			
+			if(userAttacksFirst(userTeam[currentUser], cpuTeam[currentCPU], userAttack, cpuAttack)){/* user attacks first */
+				/* check if user attack hits */
+				if(checkIfHit(userTeam[currentUser], cpuTeam[currentCPU], userAttack)) {
+					userDamage = damageCalc(userTeam[currentUser], cpuTeam[currentCPU], 1, userGRUsed, getRandomDouble(.85), userAttack);
+					if(userDamage > 0) {
+						cpuTeam[currentCPU].takeDamage(userDamage);
+						System.out.println("Your " + userTeam[currentUser].getNameShown() + " dealt " + userDamage + " damage with " + userAttack.getName() + ".");
+						System.out.println("The enemy pokemon " + cpuTeam[currentCPU].getNameShown() + " has " + cpuTeam[currentCPU].getPercentHP() + "% HP.\nIt has " + cpuTeam[currentCPU].getStatus() + " status.");
+					}
+				}
+				else {
+					System.out.println("Their " + cpuTeam[currentCPU].getNameShown() + " avoided the attack from " + userTeam[currentUser].getNameShown() + ".");
+				}
+
+				/* check if cpu attack hits */
+				if(checkIfHit(cpuTeam[currentCPU], userTeam[currentUser], cpuAttack)) {
+					
+					cpuDamage = damageCalc(cpuTeam[currentCPU], userTeam[currentUser], 1, cpuGRUsed, getRandomDouble(.85), cpuAttack);
+					if(cpuDamage > 0) {
+						userTeam[currentUser].takeDamage(cpuDamage);
+						System.out.println("Their " + cpuTeam[currentCPU].getNameShown() + " took " + cpuDamage + " damage from " + cpuAttack.getName() + ".");
+					}
+				}
+				else {
+					System.out.println("Your " + cpuTeam[currentCPU].getNameShown() + " avoided the attack from " + cpuTeam[currentCPU].getNameShown() + ".");
+				}
+			}
+			else{/*	cpu attacks first */
+				/* check if cpu attack hits */
+				if(checkIfHit(cpuTeam[currentCPU], userTeam[currentUser], cpuAttack)) {
+					
+					cpuDamage = damageCalc(cpuTeam[currentCPU], userTeam[currentUser], 1, cpuGRUsed, getRandomDouble(.85), cpuAttack);
+					if(cpuDamage > 0) {
+						userTeam[currentUser].takeDamage(cpuDamage);
+						System.out.println("Their " + cpuTeam[currentCPU].getNameShown() + " took " + cpuDamage + " damage from " + cpuAttack.getName() + ".");
+					}
+				}
+				else {
+					System.out.println("Your " + cpuTeam[currentCPU].getNameShown() + " avoided the attack from " + cpuTeam[currentCPU].getNameShown() + ".");
+				}
+
+				/* check if user attack hits */
+				if(checkIfHit(userTeam[currentUser], cpuTeam[currentCPU], userAttack)) {
+					userDamage = damageCalc(userTeam[currentUser], cpuTeam[currentCPU], 1, userGRUsed, getRandomDouble(.85), userAttack);
+					if(userDamage > 0) {
+						cpuTeam[currentCPU].takeDamage(userDamage);
+						System.out.println("Your " + userTeam[currentUser].getNameShown() + " dealt " + userDamage + " damage with " + userAttack.getName() + ".");
+						System.out.println("The enemy pokemon " + cpuTeam[currentCPU].getNameShown() + " has " + cpuTeam[currentCPU].getPercentHP() + "% HP.\nIt has " + cpuTeam[currentCPU].getStatus() + " status.");
+					}
+				}
+				else {
+					System.out.println("Their " + cpuTeam[currentCPU].getNameShown() + " avoided the attack from " + userTeam[currentUser].getNameShown() + ".");
+				}
+			}
+			/*	sets if user and/or cpu used Glaive Rush this turn */
+			userGRUsed = userAttack.getName().equalsIgnoreCase("Glaive Rush");
+			cpuGRUsed = cpuAttack.getName().equalsIgnoreCase("Glaive Rush");
 		}
 		/* 
 		 * Check for move stopping status effects
-		 * Check for which move goes first
-		 *		If a priority different higher priority goes first
+		 * Check for which move goes first(done above) 
+		 *		If a priority different higher priority goes first 
 		 *		If a priority equal check speeds of pokemons
 		 * First move happens
-		 * 		If move targets the opponent
-		 * 			checkIfHit(Pokemon pokemon, Pokemon pokemon2, Move cpuAttack)  			
+		 * 		If move targets the opponent 
+		 * 			checkIfHit(Pokemon pokemon, Pokemon pokemon2, Move cpuAttack)  (done above)			
 		 * 			If it is a status effect move 
 		 * 				Check if it cause the status effect
-		 * 			Calculate damage if it does any
-		 * 				Take away health from opponent
+		 * 			Calculate damage if it does any (done above)
+		 * 				Take away health from opponent (done above)
 		 * 			If it does recoil
 		 * 				Calculate the damage
 		 * 					crit?
@@ -281,6 +371,7 @@ public class PokemonRanga {
 		damage = ((	(2 * level)/5 + 2	) * attack.getPower() * (A/D)	) / 50;
 		damage += 2;
 		damage *= targets * 1/*PB*/ * weather * glaiveRush * critical * random * STAB *  resist * other * Zmove;
+		System.out.println("Damage from " + attacker + " = " + damage);
 		if (damage > 1)
 			return damage;
 		return 1;
@@ -426,11 +517,14 @@ public class PokemonRanga {
 		times++;
 		System.out.println("Enter 5 to switch pokemon");
 		System.out.println("Enter 6 to use an item");
-		System.out.println("Pick which move you want to use?(enter the number 1, 2, 3, 4, 5, 6)");
+		System.out.println("Your pokemon, " + pokemon.getNameShown() + ", has " + pokemon.getCurHP() + " HP out of " + pokemon.getMaxHP() + " HP.\nIt has " + pokemon.getStatus() + " status.");
+		System.out.println("Your pokemon's stats are:\nAttack: " + pokemon.getAttack() + "\nDefense: " + pokemon.getDefense() + "\nSpecial Attack: " + pokemon.getSpAttack() + "\nSpecial Defense: " + pokemon.getSpDefense() + "\nSpeed: " + pokemon.getSpeed());
+		System.out.println("\nPick which move you want to use?(enter the number 1, 2, 3, 4, 5, 6)");
 		int choice = input.nextInt();
+		input.nextLine(); // clear the buffer
 		if(choice >= 1 && choice <= 4) {
-			System.out.println("You are doing " + pokemon.getMove(choice).getName() + ".");
-			return pokemon.getMove(choice);
+			System.out.println("You are doing " + pokemon.getMove(choice-1).getName() + ".");
+			return pokemon.getMove(choice-1);
 		}
 		else if(choice == 5) {
 			
@@ -510,6 +604,29 @@ public class PokemonRanga {
 		for(int i = 0; i < lines; i++) {
 			System.out.println("\n");
 		}
+	}
+
+	/*
+	 * returns true if user attacks first
+	 * returns false if cpu attacks first
+	 */
+	public static boolean userAttacksFirst(Pokemon user, Pokemon cpu, Move userAttack, Move cpuAttack) {
+		if(userAttack.getPriority() > cpuAttack.getPriority()) {
+			return true;
+		}
+		else if(userAttack.getPriority() < cpuAttack.getPriority()) {
+			return false;
+		}
+		else if(user.getSpeed() > cpu.getSpeed()) {
+			return true;
+		}
+		else if(user.getSpeed() < cpu.getSpeed()) {
+			return false;
+		}
+		else {
+			return rand.nextBoolean();
+		}
+		
 	}
 	
 }

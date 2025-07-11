@@ -1,10 +1,7 @@
 package pokemonRanga;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Random;
-import java.util.Scanner;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 /*number,name,type 1,type 2,expYield,weight,height,expGroup,evHp,evAtck,evDef,evSpat,evSpdf,evSpeed,evolves,evoLvl,evolveMethod1,evolveMethod2,evolveMethod3,evolveMethod4,evolveMethod5,evolveMethod6,evolveMethod7,evolveMethod8,evolveMethod9,evolveMethod10,evolveMethod11,evolveMethod12,evolveName1,evolveName2,evolveName3,evolveName4,evolveName5,evolveName6,evolveName7,evolveName8,evolveName9,evolveName10,evolveName11,evolveName12,ability 1,ability 2,ability 3,egg group 1,egg group 2,Hatch Time,Gender ratio Male,Gender ratio Female,Catch Rate,Base friendship,maxHp,atck,def,spat,spdf,speed,move1,move2,move3,move4,Egg with Ditto Produced 1,Egg with Ditto Produced 2,Egg with Ditto Produced 3,Egg with Ditto Produced 4,Held Item,Pokedex Classifications,Pokedex Entry,Mega Evo,Gigantamax,Alternate Form 1,Alternate Form 1 Cause,Alternate Form 1 type 1,Alternate Form 1 type 2,Alternate Form 2,Alternate Form 2 Cause,Alternate Form 2 type 1,Alternate Form 2 type 2,Alternate Form 3,Alternate Form 3 Cause,Alternate Form 3 type 1,Alternate Form 3 type 2,Alternate Form 4,Alternate Form 4 Cause,Alternate Form 4 type 1,Alternate Form 4 type 2,TImes Used evo */
 
@@ -515,13 +512,19 @@ public class Pokemon {
 	public String getNameShown() {	return nameShown;	}
 	public Move getMove(int i) {		return moves[i];	}
 	public int getCurHP() {			return currentHP;	}
+	public int getMaxHP() {		return maxHp;		}
+	public int getNumber() {		return number;		}	
 	public int getLevel() {		return level;		}
 	public int getEvoLvl()	{	return evoLvl;		}
 	public int getAttack()	{	return atck;		}
 	public int getDefense()	{	return def;			}
+	public int getSpAttack()	{	return spat;		}
+	public int getSpDefense()	{	return spdf;		}
+	public int getSpeed()	{	return speed;		}
+	public String getPokedexEntry()	{	return pokedexEntry;	}
+	public String getPokedexClass()	{	return pokedexClass;	}
 	public String getType1()	{	return type1;	}
 	public String getType2()	{	return type2;	}
-	public int getSpeed()	{	return speed;		}
 	public Ability getAbility()	{	return ability;	}
 	public boolean getDynamaxed()	{	return dynamaxed;	}
 	public boolean getMinimized()	{	return minimized;	}
@@ -540,6 +543,8 @@ public class Pokemon {
 	public int getEvasionStages()	{	return stages[5];	}
 	public int getAccuracyStages()	{	return stages[6];	}
 	public int getCritStages()	{	return stages[7];	}
+	public String getGender()	{	return gender;	}
+	public String getItemHeld()	{	return itemHeld;	}	
 	/*
 	 * end of getters/accessors
 	 */
@@ -590,6 +595,13 @@ public class Pokemon {
 		}
 		return false;
 	}
+
+	/*
+	 * returns the status effect of the pokemon
+	 */
+	public String getStatus(){
+		return "Status Effect";
+	}
 	
 	/*
 	 *	checks if the type passed is one of the pokemon's types 
@@ -599,7 +611,25 @@ public class Pokemon {
 			return true;
 		return false;
 	}
-	
+
+	/* changes the current HP of the pokemon
+	 * if the damage is greater than the current HP, it sets current HP to 0
+	*/
+	public void takeDamage(int damage) {
+		if(currentHP - damage < 0)
+			currentHP = 0;
+		else
+			currentHP -= damage;
+	}
+	/*
+	 * returns the current HP of the pokemon as a percentage of the max HP
+	 * if current HP is 0, returns 0
+	*/
+	public int getPercentHP(){
+		if(currentHP <= 0)
+			return 0;
+		return (int) ((double) currentHP / (double) maxHp * 100);
+	}
 	/*
 	 * modify stages of stats 
 	*/
