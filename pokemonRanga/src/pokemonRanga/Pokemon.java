@@ -566,14 +566,8 @@ public class Pokemon {
 	public void levelTo(int num){
 		// equation with IV's and EV's
 		//Stat = ((basestat * 2 + IV + (EV / 4)) * level / 100) + level + 10;
-		level = num;
-		double lvl = level;
-		maxHP = (int) (((baseHP * 2 + 94) * lvl / 100 ) + level + 10);
-		atck = (int) (((baseAtck * 2 + 94) * lvl / 100 ) + level + 10);
-		def = (int) (((baseDef * 2 + 94) * lvl / 100 ) + level + 10);
-		spat = (int) (((baseSpat * 2 + 94) * lvl / 100 ) + level + 10);
-		spdf = (int) (((baseSpdf * 2 + 94) * lvl / 100 ) + level + 10);
-		speed = (int) (((baseSpeed * 2 + 94) * lvl / 100 ) + level + 10);
+		level = num - 1;
+		levelUp();
 	}
 
 	/*
