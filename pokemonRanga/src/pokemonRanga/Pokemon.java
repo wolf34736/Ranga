@@ -483,8 +483,8 @@ public class Pokemon {
 		//set current hp
 		currentHP = maxHP;
 		
-		level = setStartingLevel();
-		levelTo(level);
+		level = 0;
+		levelUp();
 		dynamaxed = false;
 		minimized = false;
 		digging = false;
@@ -492,7 +492,7 @@ public class Pokemon {
 		
 	}
 	//set starting level temporary fix ************************************************************************************
-	public int setStartingLevel() {
+	/*public int setStartingLevel() {
 		int lvl;
 		if(number > 1) {
 			if(PokemonRanga.pokemonList.get(number-2).getEvoLvl() != -1) {
@@ -502,7 +502,7 @@ public class Pokemon {
 				return 1;
 		}
 		return 1;
-	}
+	}*/
 	/*
 	 * increase level by one
 	 * increase stats accordingly
