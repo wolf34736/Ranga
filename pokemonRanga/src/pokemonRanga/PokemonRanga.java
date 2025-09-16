@@ -200,11 +200,14 @@ public class PokemonRanga {
                 cpuDamage = damageCalc(cpuTeam[currentCPU], userTeam[currentUser], 1, cpuGRUsed, getRandomDouble(.85), cpuAttack);
 				if(cpuDamage > 0) {
 					userTeam[currentUser].takeDamage(cpuDamage);
-					System.out.println("Their " + cpuTeam[currentCPU].getNameShown() + " took " + cpuDamage + " damage from " + cpuAttack.getName() + ".");
+					System.out.println("Your " + userTeam[currentUser].getNameShown() + " took " + cpuDamage + " damage from " + cpuAttack.getName() + ".");
+				}
+				else{
+					System.out.println("no damage\n\n\n");
 				}
 			}
 			else {
-				System.out.println("Your " + cpuTeam[currentCPU].getNameShown() + " avoided the attack from " + cpuTeam[currentCPU].getNameShown() + ".");
+				System.out.println("Your " + userTeam[currentUser].getNameShown() + " avoided the attack from " + cpuTeam[currentCPU].getNameShown() + ".");
 			}
 		}
 		else if(cpuSwitched) {
@@ -362,19 +365,18 @@ public class PokemonRanga {
 			STAB = 1.5;
 		}
 		/*
-		 * checks if attacker is burned and changes burn accordingly
+		 * checks if attacker is burned and increase damage by .5 accordingly
 		*/
 		if(!attack.getSpecial()  && attacker.isBurned()) {
 			burn = .5;
 		}		
 		
-		damage = ((	(2 * level)/5 + 2	) * attack.getPower() * (A/D)	) / 50;
+		damage = (int)(((	(2.0 * level)/5 + 2	) * attack.getPower() * (A/D)	) / 50);
 		damage += 2;
 		damage *= targets * 1/*PB*/ * weather * glaiveRush * critical * random * STAB *  resist * other * Zmove;
-		System.out.println("Damage from " + attacker + " = " + damage);
-		if (damage > 1)
-			return damage;
-		return 1;
+		System.out.println("Damage from " + attacker.getNameShown() + " = " + damage);
+
+		return Math.max(1, damage);
 	}
 	
 	

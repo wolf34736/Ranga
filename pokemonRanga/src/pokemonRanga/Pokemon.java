@@ -112,7 +112,7 @@ public class Pokemon {
 	String eggWDitto[] = new String[4];
 	
 	/*	base stats	*/
-	int maxHp, atck, def, spat, spdf, speed;
+	int baseHP, baseAtck, baseDef, baseSpat, baseSpdf, baseSpeed;
 	int catchRate, baseFriendship;
 	
 	/*	moves	*/
@@ -121,6 +121,7 @@ public class Pokemon {
 	
 	/*	 current stats	 */
 	int currentHP;
+	int maxHP, atck, def, spat, spdf, speed;
 	Ability ability;
 	int friendship;
 	Nature nature;
@@ -286,34 +287,39 @@ public class Pokemon {
 		index = pString.indexOf(",");
 		
 		//get base maxHp stat
-		maxHp = Integer.valueOf(pString.substring(0, index));
+		baseHP = Integer.valueOf(pString.substring(0, index));
 		pString = pString.substring(index + 1);
 		index = pString.indexOf(",");
-		
+		maxHP = baseHP;
 		//get base attack stat
-		atck = Integer.valueOf(pString.substring(0, index));
+		baseAtck = Integer.valueOf(pString.substring(0, index));
 		pString = pString.substring(index + 1);
 		index = pString.indexOf(",");
+		atck = baseAtck;
 		
 		//get base defense stat 
-		def = Integer.valueOf(pString.substring(0, index));
+		baseDef = Integer.valueOf(pString.substring(0, index));
 		pString = pString.substring(index + 1);
 		index = pString.indexOf(",");
+		def = baseDef;
 
 		//get base special attack stat
-		spat = Integer.valueOf(pString.substring(0, index));
+		baseSpat = Integer.valueOf(pString.substring(0, index));
 		pString = pString.substring(index + 1);
 		index = pString.indexOf(",");
+		spat = baseSpat;
 
 		//get base special defense stat
-		spdf = Integer.valueOf(pString.substring(0, index));
+		baseSpdf = Integer.valueOf(pString.substring(0, index));
 		pString = pString.substring(index + 1);
 		index = pString.indexOf(",");
+		spdf = baseSpdf;
 
 		//get base speed stat
-		speed = Integer.valueOf(pString.substring(0, index));
+		baseSpeed = Integer.valueOf(pString.substring(0, index));
 		pString = pString.substring(index + 1);
 		index = pString.indexOf(",");
+		speed = baseSpeed;
 		
 		//get all for base moves(decided by me)
 		for(i = 0; i < moveList.length; i++) {
@@ -475,9 +481,10 @@ public class Pokemon {
 		}
 		
 		//set current hp
-		currentHP = maxHp;
+		currentHP = maxHP;
 		
 		level = setStartingLevel();
+		levelTo(level);
 		dynamaxed = false;
 		minimized = false;
 		digging = false;
@@ -497,6 +504,79 @@ public class Pokemon {
 		return 1;
 	}
 	/*
+	 * increase level by one
+	 * increase stats accordingly
+	 */
+	public void levelUp(){
+		// equation with IV's and EV's
+		//Stat = ((basestat * 2 + IV + (EV / 4)) * level / 100) + level + 10;
+		String decr = nature.getDecrStat();
+		String incr = nature.getIncrStat();
+		level++;
+		double lvl = level;
+		// Max HP
+		maxHP = (int) (((baseHP * 2 + 94) * lvl / 100 ) + level + 10);
+		
+		//Attack 
+		atck = (int) (((baseAtck * 2 + 94) * lvl / 100 ) + level + 10);
+		if(decr.equalsIgnoreCase("Attack")){
+			atck = (int)(atck * .9);
+		}
+		else if(incr.equalsIgnoreCase("Attack")){
+			atck = (int)(atck * 1.1);
+		}
+
+		//Defense
+		def = (int) (((baseDef * 2 + 94) * lvl / 100 ) + level + 10);
+		if(decr.equalsIgnoreCase("Defense")){
+			def = (int)(atck * .9);
+		}
+		else if(incr.equalsIgnoreCase("Defense")){
+			def = (int)(atck * 1.1);
+		}
+		//Special Attack
+		spat = (int) (((baseSpat * 2 + 94) * lvl / 100 ) + level + 10);
+		if(decr.equalsIgnoreCase("Special Attack")){
+			spat = (int)(atck * .9);
+		}
+		else if(incr.equalsIgnoreCase("Special Attack")){
+			spat = (int)(atck * 1.1);
+		}
+
+		//Special Defense
+		spdf = (int) (((baseSpdf * 2 + 94) * lvl / 100 ) + level + 10);
+		if(decr.equalsIgnoreCase("Special Defense")){
+			spdf = (int)(atck * .9);
+		}
+		else if(incr.equalsIgnoreCase("Special Defense")){
+			spdf = (int)(atck * 1.1);
+		}
+
+		//Speed
+		speed = (int) (((baseSpeed * 2 + 94) * lvl / 100 ) + level + 10);
+		if(decr.equalsIgnoreCase("Speed")){
+			speed = (int)(atck * .9);
+		}
+		else if(incr.equalsIgnoreCase("Speed")){
+			speed = (int)(atck * 1.1);
+		}
+
+	}
+
+	public void levelTo(int num){
+		// equation with IV's and EV's
+		//Stat = ((basestat * 2 + IV + (EV / 4)) * level / 100) + level + 10;
+		level = num;
+		double lvl = level;
+		maxHP = (int) (((baseHP * 2 + 94) * lvl / 100 ) + level + 10);
+		atck = (int) (((baseAtck * 2 + 94) * lvl / 100 ) + level + 10);
+		def = (int) (((baseDef * 2 + 94) * lvl / 100 ) + level + 10);
+		spat = (int) (((baseSpat * 2 + 94) * lvl / 100 ) + level + 10);
+		spdf = (int) (((baseSpdf * 2 + 94) * lvl / 100 ) + level + 10);
+		speed = (int) (((baseSpeed * 2 + 94) * lvl / 100 ) + level + 10);
+	}
+
+	/*
 	 * status effect arrays are set to each status effect
 	 * status effect arrays will be used to inform how the pokemon will be affected 
 	 */
@@ -512,7 +592,7 @@ public class Pokemon {
 	public String getNameShown() {	return nameShown;	}
 	public Move getMove(int i) {		return moves[i];	}
 	public int getCurHP() {			return currentHP;	}
-	public int getMaxHP() {		return maxHp;		}
+	public int getMaxHP() {		return maxHP;		}
 	public int getNumber() {		return number;		}	
 	public int getLevel() {		return level;		}
 	public int getEvoLvl()	{	return evoLvl;		}
@@ -628,8 +708,10 @@ public class Pokemon {
 	public int getPercentHP(){
 		if(currentHP <= 0)
 			return 0;
-		return (int) ((double) currentHP / (double) maxHp * 100);
+		return (int) ((double) currentHP / (double) maxHP * 100);
 	}
+
+	
 	/*
 	 * modify stages of stats 
 	*/

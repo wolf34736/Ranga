@@ -16,11 +16,11 @@ public class Nature {
 	}
 	
 	public String getNatureName() {return name;}
-	private String getDecrStat() {
+	public String getDecrStat() {
 		return decrStats[number];
 	}
 
-	private String getIncrStat() {
+	public String getIncrStat() {
 		return incrStats[number];
 	}
 	
