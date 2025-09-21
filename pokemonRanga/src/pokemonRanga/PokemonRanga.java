@@ -66,10 +66,16 @@ public class PokemonRanga {
 		catch (FileNotFoundException e) {
 			System.out.println("An error occurred.");
 		}
+		
+		
+		
+		
+		
 		/**********************************************************************************/
 		/*
 		 * pick pokemon for each team
 		*/
+		/* run battler commenting it out for starting the game
 		//userPickTeam(userTeam, pokemonList);
 		cpuPickTeam(userTeam, pokemonList);
 		clearScreen(2);
@@ -82,8 +88,10 @@ public class PokemonRanga {
 		/*
 		 * battle
 		*/
+		/* run battler commenting it out for starting the game
 		System.out.println("\n\n\nYou sent out " + userTeam[0].getNameShown() +".\nCPU sent out " + cpuTeam[0].getNameShown() +  ".\n\nYour moves are:\n");
 		battle(userTeam, cpuTeam, 0, 0);
+		*/
 	}
 	/*
 	 * helps user pick a team
@@ -581,6 +589,7 @@ public class PokemonRanga {
 		Random rand = new Random();
 		for(int i = 0; i < cpuTeam.length; i++) {
 			cpuTeam[i] = pokemonList.get(rand.nextInt(pokemonList.size()));
+			cpuTeam[i].levelTo(50);
 		}
 		System.out.println("\n\ncpu picked a team");
 		printTeam(cpuTeam);
