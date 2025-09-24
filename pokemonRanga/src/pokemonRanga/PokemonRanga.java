@@ -23,6 +23,7 @@ public class PokemonRanga {
 	public static ArrayList<Move> allMoves = new ArrayList<Move>();
 	public static boolean userGRUsed = false;
 	public static boolean cpuGRUsed = false;
+	public static Map Kanto = new Map("Kanto");
 	
 	public static void main(String[] args) {
 		String titles = "";
