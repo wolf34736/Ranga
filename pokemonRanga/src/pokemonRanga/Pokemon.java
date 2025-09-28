@@ -407,7 +407,7 @@ public class Pokemon {
 		}
 		
 		//times an move has to be used to evolve
-		timesEvoMove = Integer.valueOf(pString.substring(0, index));
+		timesEvoMove = Integer.parseInt(pString.substring(0, index));
 		pString = pString.substring(index + 1);
 		index = pString.indexOf(",");
 		
@@ -431,7 +431,7 @@ public class Pokemon {
 			index = pString.indexOf(",");
 		}
 		nameShown = pString.substring(0, index);
-		pString = pString.substring(index + 1);
+		//pString = pString.substring(index + 1);
 
 		//decide which is their current ability
 		int numAbilities = 1;
@@ -490,6 +490,134 @@ public class Pokemon {
 		digging = false;
 		diving = false;
 		
+	}
+	
+	
+	public Pokemon(Pokemon p){
+		for(int i = 0; i < numberOfStatusEffectsVolatile; i++)
+			hasStatusEffectVolatile[i] = false;
+		for(int i = 0; i < numberOfStatusEffectsNonVolatile; i++)
+			hasStatusEffectNonVolatile[i] = false;
+		setupStatusEffects();
+		Random rand = new Random();
+		int i;
+
+		number = p.number;
+		name = p.name;
+		type1 = p.type1;
+		type2 = p.type2;
+		expYield = p.expYield;
+		weight = p.weight;
+		height = p.height;
+		expGroup = p.expGroup;
+		evHp = p.evHp;
+		evDef = p.evDef;
+		evSpat = p.evSpat;
+		evSpeed = p.evSpeed;
+		evolves = p.evolves;
+		evoLvl = p.evoLvl;
+		for(i = 0; i< evolveMethods.length; i++){
+			evolveMethods[i] = p.evolveMethods[i];
+		}
+		for(i = 0; i< evolveNames.length; i++){
+			evolveNames[i] = p.evolveNames[i];
+		}
+		for(i = 0; i < abilityOptions.length; i++) {
+			abilityOptions[i] = p.abilityOptions[i];
+		}
+		for(i = 0; i < eggGroups.length; i++) {
+			eggGroups[i] = p.eggGroups[i];
+		}
+		hatchTime = hatchTime;
+		for(i = 0; i < genderRatios.length; i++) {
+			genderRatios[i] = p.genderRatios[i];
+		}
+		catchRate = p.catchRate;
+		baseFriendship = p.baseFriendship;
+		baseHP = p.baseHP;
+		maxHP = baseHP;
+		baseAtck = p.baseAtck;
+		atck = baseAtck;
+		baseDef = p.baseDef;
+		def = baseDef;
+		baseSpat = p.baseSpat;
+		spat = baseSpat;
+		baseSpdf = p.baseSpdf;
+		spdf = baseSpdf;
+		baseSpeed = p.baseSpeed;
+		speed = baseSpeed;
+		for(i = 0; i < moveList.length; i++){
+			moveList[i] = p.moveList[i];
+		}
+		for(i = 0; i < eggWDitto.length; i++) {
+			eggWDitto[i] = p.eggWDitto[i];
+		}
+		itemHeld = p.itemHeld;
+		pokedexClass = p.pokedexClass;
+		pokedexEntry = p.pokedexEntry;
+		megaEvo = p.megaEvo;
+		gigantamax = p.gigantamax;
+		for(i = 0; i < alternateFormNames.length; i++) {
+			//alternate form names
+			alternateFormNames[i] = p.alternateFormNames[i];
+			//alternate form causes
+			alternateFormCauses[i] = p.alternateFormCauses[i];
+			//alternate form type1
+			alternateFormType1[i] = p.alternateFormType1[i];
+			//alternate form type2
+			alternateFormType2[i] = p.alternateFormType2[i];
+		}
+		timesEvoMove = p.timesEvoMove;
+		evoMoveName = p.evoMoveName;
+		for(i = 0; i < heldItems.length; i++) {
+			heldItems[i] = p.heldItems[i];
+		}
+		nameShown = p.nameShown;
+		int numAbilities = 1;
+		for(String s: abilityOptions) {
+			if(s.equalsIgnoreCase("none"))
+				numAbilities++;
+		}
+		ability = new Ability(abilityOptions[rand.nextInt(0, numAbilities)]);
+		nature = new Nature(rand.nextInt(0, 24));
+		if(genderRatios[0] < 0 && genderRatios[1] < 0) {//if gender unknown usually legendaries
+			gender = "Gender Unknown";
+		}
+		else if(genderRatios[0] > genderRatios[1]) {//if male more likely
+			if(rand.nextDouble(0, 100) < genderRatios[0]) {
+				gender = "Male";
+			}
+			else {
+				gender = "Female";
+			}
+		}
+		else if(genderRatios[0] > genderRatios[1]) {//if female more likely
+			if(rand.nextDouble(0, 100) < genderRatios[1]) {
+				gender = "Female";
+			}
+			else {
+				gender = "Male";
+			}
+		}
+		if(name.equalsIgnoreCase("unown")) {
+			int unown = rand.nextInt(0, 27);
+			if(unown < 26)
+				unownLetter = alphabet[unown];
+			else if(unown == 27)
+				unownLetter = "?";
+			else
+				unownLetter = "!";
+		}
+		else {
+			unownLetter = "none";
+		}
+		currentHP = maxHP;
+		level = 0;
+		levelUp();
+		dynamaxed = false;
+		minimized = false;
+		digging = false;
+		diving = false;
 	}
 	//set starting level temporary fix ************************************************************************************
 	/*public int setStartingLevel() {
@@ -566,15 +694,16 @@ public class Pokemon {
 	public void levelTo(int num){
 		// equation with IV's and EV's
 		//Stat = ((basestat * 2 + IV + (EV / 4)) * level / 100) + level + 10;
-		level = num - 1;
-		levelUp();
+		while(level < num){
+			levelUp();
+		}
 	}
 
 	/*
 	 * status effect arrays are set to each status effect
 	 * status effect arrays will be used to inform how the pokemon will be affected 
 	 */
-	public void setupStatusEffects() {
+	private void setupStatusEffects() {
 		statusEffectsVolatile[0] = new Burn();
 		statusEffectsNonVolatile[0] = new Substitue();
 	}
