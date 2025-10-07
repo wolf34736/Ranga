@@ -10,7 +10,7 @@ class Map {
     Route[] routes;
     City[] cities;
     Badge[] badges = new Badge[8];
-    final String kantoRoutes = "Viridian Forest,Mt. Moon,Diglett's Cave,Rock Tunnel,Rock Tunnel B1F,Pokemon Tower,Power Plant,Seafoam Islands,Seafoam Islands,Pokemon Mansion,Victory Road,";
+    final String kantoRoutes = "Viridian Forest,Mt. Moon,Diglett's Cave,Rock Tunnel,Rock Tunnel B1F,Pokemon Tower,Power Plant,Seafoam Islands,Seafoam Islands,Pokemon Mansion,Victory Road,Cerulean Cave,Cerulean Cave(Mewtwo),";
     final String kantoCities = "Pallet Town,Pewter City,Cerulean City,Vermilion City,Celadon City,Fuchsia City,Saffron City,Cinnabar Island,Viridian City,Pokemon League Reception Gate,Indigo Plateau,";
     final String kantoBadges = "Boulder,Cascade,Thunder,Rainbow,Soul,Marsh,Volcano,Earth,";
 
@@ -28,7 +28,7 @@ class Map {
         //route setup
         routes = new Route[37];
         for(int i = 1; i < 26; i++){
-            routes[i - 1] = new Route(region,"Route" + (i));
+            routes[i - 1] = new Route(region,"Route " + (i));
         }
         for(int i = 25; i < routes.length; i++){
             routes[i] = new Route(region, temp.substring(0, temp.indexOf(',')));
