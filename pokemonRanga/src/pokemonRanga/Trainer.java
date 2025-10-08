@@ -9,6 +9,7 @@ public class Trainer {
     public Pokemon[] team = new Pokemon[6];
     public ArrayList<Pokemon> box = new ArrayList<>();
     public ItemBag iventory;
+    public Badge kantoEarned[]  = new Badge[8];
 
 
     /**
