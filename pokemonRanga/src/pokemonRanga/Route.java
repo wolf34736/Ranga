@@ -53,49 +53,51 @@ public class Route {
             //parse out the pokemon found on the route
             routePokemon = findRoute(kantoPokemon);
             temp = routePokemon.split(",");
-            temp[temp.length-1] = temp[temp.length-1].substring(0,temp[temp.length-1].length()-2);/*get rid of the @ symbol*/
-            this.routePokemon = temp;
+            this.routePokemon = new String[temp.length-1];
+            for(int i = 1; i < temp.length; i++) {
+                this.routePokemon[i] = temp[i];
+            }
 
             //parse out the pokemon spawn rates on the route
             routePokemonPercents = findRoute(kantoPokemonSpawnPercent);
             temp = routePokemonPercents.split(",");
-            temp[temp.length-1] = temp[temp.length-1].substring(0,temp[temp.length-1].length()-2);/*get rid of the @ symbol*/
-            this.routePokemonPercents = new int[temp.length];
-            for(int i = 0; i < temp.length; i++){
+            this.routePokemonPercents = new int[temp.length-1];
+            for(int i = 1; i < temp.length; i++){
                 this.routePokemonPercents[i] = Integer.parseInt(temp[i]);
             }
 
             //parse out the pokemon spawn levels on the route
             routePokemonLevels = findRoute(kantoPokemonSpawnLevels);
             temp = routePokemonLevels.split(",");
-            temp[temp.length-1] = temp[temp.length-1].substring(0,temp[temp.length-1].length()-2);/*get rid of the @ symbol*/
-            this.routePokemonLevels = temp;
+            for(int i = 1; i < temp.length; i++) {
+                this.routePokemonLevels[i-1] = temp[i];
+            }
 
             //parse out route connections
             routeConnections = findRoute(kantoConnections);
             temp = routeConnections.split(",");
-            temp[temp.length-1] = temp[temp.length-1].substring(0,temp[temp.length-1].length()-2);/*get rid of the @ symbol*/
-            this.routeConnections = temp;
+            for(int i = 1; i < temp.length; i++) {
+                this.routeConnections[i-1] = temp[i];
+            }
 
             //parse out the route Trainers
             routeTrainer = findRoute(kantoTrainers);
             temp = routeTrainer.split(",");
-            temp[temp.length-1] = temp[temp.length-1].substring(0,temp[temp.length-1].length()-2);/*get rid of the @ symbol*/
             routeTrainers = temp;
 
             //parse out the route Trainer's Pokemon(s)
             routeTrainerPokemon = findRoute(kantoTrainerPokemons);
             temp = routeTrainerPokemon.split(",");
-            temp[temp.length-1] = temp[temp.length-1].substring(0,temp[temp.length-1].length()-2);/*get rid of the @ symbol*/
-            this.routeTrainerPokemon = temp;
+            for(int i = 1; i < temp.length; i++) {
+                this.routeTrainerPokemon[i-1] = temp[i];
+            }
 
             //parse out the route Trainer's Pokemon Level(s)
             routeTrainerPokemonLevels = findRoute(kantoTrainerPokemonLevels);
             temp = routeTrainerPokemonLevels.split(",");
-            temp[temp.length-1] = temp[temp.length-1].substring(0,temp[temp.length-1].length()-2);/*get rid of the @ symbol*/
-            this.routeTrainerPokemonLevels = new int[temp.length];
-            for(int i = 0; i < temp.length; i++){
-                this.routeTrainerPokemonLevels[i] = Integer.parseInt(temp[i]);
+            this.routeTrainerPokemonLevels = new int[temp.length-1];
+            for(int i = 1; i < temp.length; i++){
+                this.routeTrainerPokemonLevels[i-1] = Integer.parseInt(temp[i]);
             }
             
 
@@ -204,20 +206,14 @@ public class Route {
         for(i = 0; i < info.length() - name.length() ; i++){
             if(name.equalsIgnoreCase(info.substring(i, i+name.length()))){
                 index = i;
-                i = Integer.MAX_VALUE;
+                break;
             }
         }
-        i = index;
         String temp = "";
-        while(info.charAt(i) != '@'){
-            temp = info.substring(index, i);
-            i++;
-        }
+        index += name.length() + 1;
+        temp = info.substring(index, info.indexOf("@",index));
         if(temp.length() > 0)
             return temp;
-
-
-
         return "";
     }
 
@@ -319,6 +315,9 @@ public class Route {
         return encounterPokemon;
     }
 
+    /**
+     * @return connections to the route(cities/route/caves)
+     */
     public String[] connections(){
         return routeConnections;
     }

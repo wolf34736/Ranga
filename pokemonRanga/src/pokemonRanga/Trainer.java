@@ -99,6 +99,19 @@ public class Trainer {
     }
 
     /**
+     * adds badge to trainers kantoEarned
+     * @param badge
+     */
+    public void addKantoBadge(Badge badge){
+        for(int i = 0; i < kantoEarned.length; i++) {
+            if(kantoEarned[i] == null) {
+                kantoEarned[i] = badge;
+                return;
+            }
+        }
+    }
+    
+    /**
      * handles answering questions and returns the answer
      * @param question
      * @return answer

@@ -59,7 +59,7 @@ final class Map {
             citiesKanto[i] = new City(pokemonList, region, name);
             temp = temp.substring(temp.indexOf(',') + 1);
             if(kantoGymCities.contains(name)){/*add badge to gym cities*/
-                citiesKanto[i].addBadge(badgesKanto[j]);
+                citiesKanto[i].addBadge(pokemonList, badgesKanto[j]);
                 j++;
             }
         }
